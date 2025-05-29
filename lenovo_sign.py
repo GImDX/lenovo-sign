@@ -33,13 +33,25 @@ class Push_messages:
             response = requests.post(
                 f"https://sctapi.ftqq.com/{self.send_key}.send", data=data
             )
-            res_data = response.json().get("data")
+
+            resp_json = response.json()
+            if resp_json.get("code") != 0:
+                print(f"Server酱推送失败: {resp_json.get('message')}")
+                return False
+
+            res_data = resp_json.get("data")
+            if not res_data:
+                print("Server酱返回 data 字段为空")
+                return False
+
             pushid = res_data.get("pushid")
             readkey = res_data.get("readkey")
+
             result = requests.get(
                 f"https://sctapi.ftqq.com/push?id={pushid}&readkey={readkey}"
             )
-            return True if result.json().get("code") == 0 else False
+
+            return result.json().get("code") == 0
 
     class Wechat_message:
         def __init__(self, corpid: str, corpsecret: str, agentid: str) -> None:
