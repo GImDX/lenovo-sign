@@ -250,6 +250,7 @@ def main():
             continue
         message += sign(session)
     push(message)
+    print(message)
 
 
 if __name__ == "__main__":
